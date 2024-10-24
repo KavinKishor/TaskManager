@@ -1,21 +1,30 @@
-const mongoose = require('mongoose')
-const express = require('express')
-const cors = require('cors')
-const authRouter = require('./Routers/userRouter')
-const taskRouter = require('./Routers/taskRouter')
+const mongoose = require("mongoose");
+const express = require("express");
+const cors = require("cors");
+const authRouter = require("./Routers/userRouter");
+const taskRouter = require("./Routers/taskRouter");
 
-const app = express()
+const app = express();
 
-app.listen(process.env.PORT,()=>{
-    console.log(`port is connected on ${process.env.PORT}`) 
-})
-mongoose.connect(process.env.MONGO_URI).then(()=>{
+app.listen(process.env.PORT, () => {
+  console.log(`port is connected on ${process.env.PORT}`);
+});
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
     console.log("DB connected");
-}).catch(()=>{
+  })
+  .catch(() => {
     console.log("DB not connected");
-})
-app.use(cors())
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
-app.use('/auth',authRouter)
-app.use('/task',taskRouter);
+  });
+app.use(
+  cors({
+    origin: "https://taskmanager-1-526y.onrender.com",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/auth", authRouter);
+app.use("/task", taskRouter);

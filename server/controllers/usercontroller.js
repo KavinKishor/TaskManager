@@ -52,10 +52,10 @@ let loguser = asyncHandler(async (req, res) => {
       .status(200)
       .json({ success: true, message: "user logged successfully", userToken });
   } catch (error) {
-    console.log(error);
+    console.error("Login error:", error); // Log the error for debugging
     return res
-      .status(401)
-      .json({ success: false, message: "logging failure", error });
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
   }
 });
 
