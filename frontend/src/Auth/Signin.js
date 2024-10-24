@@ -15,16 +15,14 @@ const handlesignin = async (e) => {
   e.preventDefault();
   try {
     await axios
-      .post("http://localhost:3002/auth/loggin", { email, password })
+      .post(`${process.env.REACT_APP_API_URL}/auth/loggin`, { email, password })
       .then((res) => {
         console.log(res.data);
         toast.success(res.data.message);
         localStorage.setItem("Auth-token", res.data.userToken);
         navigate("/tasks");
       })
-      .catch((err) =>(toast.error(err.response.data.message)
-      )
-      );
+      .catch((err) => toast.error(err.response.data.message));
   } catch (error) {
     toast.error(error);
   }

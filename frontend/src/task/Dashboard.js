@@ -40,7 +40,7 @@ const Dashboard = () => {
         },
       };
       await axios
-        .get("http://localhost:3002/task/categories", config)
+        .get(`${process.env.REACT_APP_API_URL}/task/categories`, config)
         .then((res) => {
           setCategories(res.data.getall);
         });
@@ -54,7 +54,7 @@ const Dashboard = () => {
         },
       };
       await axios
-        .get("http://localhost:3002/task/tasks", config)
+        .get(`${process.env.REACT_APP_API_URL}/task/tasks`, config)
         .then((res) => {
           // console.log(res.data.getall.title)
           setTasks(res.data.getall);
@@ -81,7 +81,7 @@ const Dashboard = () => {
     try {
       await axios
         .put(
-          `http://localhost:3002/task/tasks/${taskId}/status`,
+          `${process.env.REACT_APP_API_URL}/task/tasks/${taskId}/status`,
           { status: newStatus },
           config
         )
@@ -108,7 +108,7 @@ const Dashboard = () => {
     };
     try {
       await axios
-        .delete(`http://localhost:3002/task/tasks/${id}`, config)
+        .delete(`${process.env.REACT_APP_API_URL}/task/tasks/${id}`, config)
         .then(
           (res) => (
             setTasks((prevTask) => prevTask.filter((task) => task._id !== id)),
@@ -133,7 +133,10 @@ const handledeletecategory = async(catId)=>{
   };
 
   try {
-    await axios.delete(`http://localhost:3002/task/categories/${catId}`,config)
+    await axios.delete(
+      `${process.env.REACT_APP_API_URL}/task/categories/${catId}`,
+      config
+    );
     const remainingTask = tasks.filter((task=> task.category?._id !== catId))
 
     setTasks(remainingTask)

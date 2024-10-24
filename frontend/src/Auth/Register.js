@@ -13,7 +13,11 @@ const handlesignup = async(e)=>{
   e.preventDefault()
   try {
     await axios
-      .post("http://localhost:3002/auth/createuser", { name, email, password })
+      .post(`${process.env.REACT_APP_API_URL}/auth/createuser`, {
+        name,
+        email,
+        password,
+      })
       .then((res) => {
         toast.success(res.data.message);
         navigate("/");

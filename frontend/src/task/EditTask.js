@@ -24,20 +24,20 @@ const EditTask = () => {
       };
       try {
         await axios
-        .get(`http://localhost:3002/task/tasks/${id}`, config)
-        .then(
-          (res) => (
-            // console.log(res.data),
-            setTitle(res.data.title),
-            setCategory(res.data.category._id),
-            setDescription(res.data.description),
-            setStatus(res.data.status),
-            setDueDate(res.data.dueDate)
-          )
-        );
+          .get(`${process.env.REACT_APP_API_URL}/task/tasks/${id}`, config)
+          .then(
+            (res) => (
+              // console.log(res.data),
+              setTitle(res.data.title),
+              setCategory(res.data.category._id),
+              setDescription(res.data.description),
+              setStatus(res.data.status),
+              setDueDate(res.data.dueDate)
+            )
+          );
 // find categories
         await axios
-          .get("http://localhost:3002/task/categories", config)
+          .get(`${process.env.REACT_APP_API_URL}/task/categories`, config)
           .then((res) => setCategories(res.data.getall));
         
       } catch (error) {
@@ -60,15 +60,17 @@ const EditTask = () => {
 
     await axios
       .put(
-        `http://localhost:3002/task/tasks/${id}`,
-        { title, description, status, dueDate,category },
+        `${process.env.REACT_APP_API_URL}/task/tasks/${id}`,
+        { title, description, status, dueDate, category },
         config
       )
-      .then((res) => (
-        setTasks(res.data),
-        toast.success(res.data.message),
-        navigate('/tasks')
-    ));
+      .then(
+        (res) => (
+          setTasks(res.data),
+          toast.success(res.data.message),
+          navigate("/tasks")
+        )
+      );
   };
 
   return (

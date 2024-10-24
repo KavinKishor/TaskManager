@@ -29,7 +29,7 @@ const NewTask = () => {
       try {
         // find categories
         await axios
-          .get("http://localhost:3002/task/categories", config)
+          .get(`${process.env.REACT_APP_API_URL}/task/categories`, config)
           .then((res) => setCategories(res.data.getall));
       } catch (error) {
         console.log(error);
@@ -51,15 +51,12 @@ const NewTask = () => {
     };
     try {
       await axios
-        .post(
-          "http://localhost:3002/task/tasks",
+        .post(`${process.env.REACT_APP_API_URL}/task/tasks`,
           { title, description, status, category, duedate },
           config
         )
-        .then((res) => (
-          toast.success(res.data.message),
-          navigate('/tasks')
-        )).catch((err)=>(toast.error(err.message)))
+        .then((res) => (toast.success(res.data.message), navigate("/tasks")))
+        .catch((err) => toast.error(err.message));
     } catch (error) {
       console.log(error)
       
@@ -74,7 +71,11 @@ const NewTask = () => {
       },
     };
     try {
-    const response =   await axios.post("http://localhost:3002/task/categories",{name:newCategory},config)
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/task/categories`,
+      { name: newCategory },
+      config
+    );
       const createdcategory = response.data.category
      setCategories([...categories,createdcategory])
      setCategory(createdcategory._id)
