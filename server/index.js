@@ -18,4 +18,4 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use('/auth',authRouter)
-app.use('/task',taskRouter)
+app.use('/task',taskRouter);
