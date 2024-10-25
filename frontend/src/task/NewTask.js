@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import LoadingSpinner from "../utils/LoadingSpinnerjs";
 
 const NewTask = () => {
   const [tasks, setTasks] = useState([]);
@@ -11,6 +12,7 @@ const NewTask = () => {
   const [category, setCategory] = useState('');
   const [status, setStatus] = useState();
   const [categories, setCategories] = useState([]);
+   const [loading, setLoading] = useState(false);
   //category
   const [newCategory,setNewCategory] =useState()
   const [showNewCategoryInput,setShowNewCategoryInput] = useState(false)
@@ -42,6 +44,7 @@ const NewTask = () => {
   const handlnewtask = async (e) => {
     e.preventDefault()
     // console.log(e);
+    setLoading(true)
     
     const config = {
       headers: {
@@ -55,15 +58,18 @@ const NewTask = () => {
           { title, description, status, category, duedate },
           config
         )
-        .then((res) => (toast.success(res.data.message), navigate("/tasks")))
+        .then((res) => (toast.success(res.data.message),setLoading(false),navigate("/tasks")))
         .catch((err) => toast.error(err.message));
     } catch (error) {
       console.log(error)
       
+    }finally{
+      setLoading(false)
     }
   };
   //category
   const handlenewcategory = async () => {
+    setLoading(true)
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -80,12 +86,15 @@ const NewTask = () => {
      setCategories([...categories,createdcategory])
      setCategory(createdcategory._id)
      setShowNewCategoryInput(false)
+     setLoading(false)
      toast.success(response.data.message)
     } catch (error) {
       console.log(error);
     }
   };
-
+if(loading){
+  return <LoadingSpinner/>
+}
   return (
     <>
       <h3 className="text-center mt-5 text-xl font-semibold text-blue-800">

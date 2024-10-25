@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from 'react-toastify'
+import LoadingSpinner from "../utils/LoadingSpinnerjs";
+
 
 const EditTask = () => {
   const { id } = useParams();
@@ -12,6 +14,7 @@ const EditTask = () => {
   const [category, setCategory] = useState();
   const [status, setStatus] = useState();
    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,6 +54,7 @@ const EditTask = () => {
 
   const handleUpdate = async(e) => {
     e.preventDefault();
+    setLoading(true)
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -68,11 +72,15 @@ const EditTask = () => {
         (res) => (
           setTasks(res.data),
           toast.success(res.data.message),
+          setLoading(false),
           navigate("/tasks")
         )
       );
   };
 
+  if(loading){
+    return <LoadingSpinner/>
+  }
   return (
     <>
       <h3 className="text-center mt-5 text-xl font-semibold text-blue-800">

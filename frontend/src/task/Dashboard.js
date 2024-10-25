@@ -3,11 +3,13 @@ import Header from "../utils/Header";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import  LoadingSpinner from "../utils/LoadingSpinnerjs";
 
 const Dashboard = () => {
   const [category, setCategory] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const [categories, setCategories] = useState([]);
+  const [loading,setLoading] = useState(false)
   //
 
   const [tasks, setTasks] = useState([]);
@@ -56,22 +58,26 @@ const Dashboard = () => {
       await axios
         .get(`${process.env.REACT_APP_API_URL}/task/tasks`, config)
         .then((res) => {
-          // console.log(res.data.getall.title)
-          setTasks(res.data.getall);
-          setFilteredTask(res.data.getall);
+      
+          const sortedTasks = res.data.getall.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          );
+          setTasks(sortedTasks);
+          setFilteredTask(sortedTasks);
         });
     };
 
     fetchTasks();
     fetchCategories();
   }, []);
-  //    console.log(tasks);
+ 
 
   const handleEdit = (taskId) => {
     navigate(`/${taskId}`);
   };
 
   const handlestatuschage = async (taskId, newStatus) => {
+    setLoading(true)
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -95,11 +101,16 @@ const Dashboard = () => {
             )
           )
         );
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      
+    }finally{
+      setLoading(false)
+    }
   };
 
   const handledeletetask = async (id) => {
-    // e.preventDefault()
+   setLoading(true)
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -117,38 +128,44 @@ const Dashboard = () => {
         );
     } catch (error) {
       console.log(error);
+    }finally{
+      setLoading(false)
     }
   };
-//delete category
+  //delete category
 
-const handledeletecategory = async(catId)=>{
-
-  const confirmDel = window.confirm("Are you sure to delete this category with associated tasks ? ")
-  if(!confirmDel) return;
-  const config = {
-    headers: {
-      "Content-type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("Auth-token")}`,
-    },
-  };
-
-  try {
-    await axios.delete(
-      `${process.env.REACT_APP_API_URL}/task/categories/${catId}`,
-      config
+  const handledeletecategory = async (catId) => {
+    const confirmDel = window.confirm(
+      "Are you sure to delete this category with associated tasks ? "
     );
-    const remainingTask = tasks.filter((task=> task.category?._id !== catId))
+    if (!confirmDel) return;
+    setLoading(true)
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("Auth-token")}`,
+      },
+    };
 
-    setTasks(remainingTask)
-    setFilteredTask(remainingTask)
-    setCategories(prvCat =>prvCat.filter(cat=>cat._id !== catId))
-    toast.success("category and associated tasks are deleted successfully")
-  } catch (error) {
-    console.log(error);
-    
-  }
-  
-}
+    try {
+      await axios.delete(
+        `${process.env.REACT_APP_API_URL}/task/categories/${catId}`,
+        config
+      );
+      const remainingTask = tasks.filter(
+        (task) => task.category?._id !== catId
+      );
+
+      setTasks(remainingTask);
+      setFilteredTask(remainingTask);
+      setCategories((prvCat) => prvCat.filter((cat) => cat._id !== catId));
+      toast.success("category and associated tasks are deleted successfully");
+    } catch (error) {
+      console.log(error);
+    }finally{
+      setLoading(false)
+    }
+  };
   //filter
 
   useEffect(() => {
@@ -163,6 +180,9 @@ const handledeletecategory = async(catId)=>{
     setFilteredTask(filtered);
   }, [category, statusFilter, tasks]);
 
+  if(loading){
+    return <LoadingSpinner/>
+  }
   return (
     <>
       <div>
@@ -329,7 +349,7 @@ const handledeletecategory = async(catId)=>{
           ))}
           <hr className="border-2 m-1" />
           {/* pagination */}
-          <div className="mt-9 fixed">
+          <div className="mt-9">
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i + 1}
