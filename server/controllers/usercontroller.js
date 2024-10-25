@@ -27,10 +27,13 @@ let createuser = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
 let loguser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   console.log(email,password);
-  console.log(re.body);
+  console.log(req.body);
   
   try {
     const user = await User.findOne({ email });
@@ -55,11 +58,13 @@ let loguser = asyncHandler(async (req, res) => {
     const userToken = jwt.sign({ _id: user._id }, process.env.Token, {
       expiresIn: "30d",
     });
+    console.log(userToken);
+    
     return res
       .status(200)
       .json({ success: true, message: "user logged successfully", userToken });
   } catch (error) {
-    console.error("Login error:", error); // Log the error for debugging
+    console.error("Login error:", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
