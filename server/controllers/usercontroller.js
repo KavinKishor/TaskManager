@@ -55,7 +55,7 @@ let loguser = asyncHandler(async (req, res) => {
         message: "Password you have entered is not correct",
       });
     }
-    const userToken = jwt.sign({ _id: user._id }, process.env.Token, {
+    const userToken = jwt.sign({ _id: user._id }, process.env.TOKEN, {
       expiresIn: "30d",
     });
     console.log(userToken);
