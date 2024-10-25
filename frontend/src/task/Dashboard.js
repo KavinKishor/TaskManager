@@ -3,13 +3,13 @@ import Header from "../utils/Header";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import  LoadingSpinner from "../utils/LoadingSpinnerjs";
+
 
 const Dashboard = () => {
   const [category, setCategory] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const [categories, setCategories] = useState([]);
-  const [loading,setLoading] = useState(false)
+ 
   //
 
   const [tasks, setTasks] = useState([]);
@@ -77,7 +77,7 @@ const Dashboard = () => {
   };
 
   const handlestatuschage = async (taskId, newStatus) => {
-    setLoading(true)
+    
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -104,13 +104,11 @@ const Dashboard = () => {
     } catch (error) {
       console.log(error);
       
-    }finally{
-      setLoading(false)
     }
   };
 
   const handledeletetask = async (id) => {
-   setLoading(true)
+
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -128,8 +126,6 @@ const Dashboard = () => {
         );
     } catch (error) {
       console.log(error);
-    }finally{
-      setLoading(false)
     }
   };
   //delete category
@@ -139,7 +135,7 @@ const Dashboard = () => {
       "Are you sure to delete this category with associated tasks ? "
     );
     if (!confirmDel) return;
-    setLoading(true)
+    
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -162,8 +158,6 @@ const Dashboard = () => {
       toast.success("category and associated tasks are deleted successfully");
     } catch (error) {
       console.log(error);
-    }finally{
-      setLoading(false)
     }
   };
   //filter
@@ -180,9 +174,7 @@ const Dashboard = () => {
     setFilteredTask(filtered);
   }, [category, statusFilter, tasks]);
 
-  if(loading){
-    return <LoadingSpinner/>
-  }
+ 
   return (
     <>
       <div>
