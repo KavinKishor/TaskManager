@@ -29,16 +29,23 @@ let createuser = asyncHandler(async (req, res) => {
 
 let loguser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  console.log(email,password);
+  console.log(re.body);
+  
   try {
     const user = await User.findOne({ email });
+    console.log(user);
     if (!user) {
       return res.status(401).json({
         success: false,
         message: "Email is not registerd",
       });
     }
-
+    
+    
     const userPassword = await bcrypt.compare(password, user.password);
+    console.log(userPassword);
+    
     if (!userPassword) {
       return res.status(401).json({
         success: false,
